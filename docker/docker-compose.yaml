@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: always
+    ports:
+      - "5439:5432"
+    environment:
+      POSTGRES_DB: main
+      POSTGRES_PASSWORD: very_secret_password
+      POSTGRES_USER: dbuser
