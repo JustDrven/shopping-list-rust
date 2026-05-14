@@ -1,20 +1,23 @@
-
 use axum::{
-    routing::get,
-    Router,
+    Router, routing::get,
 };
 
 mod util;
+mod controller;
+mod entity;
+mod dto;
+mod service;
 
 #[tokio::main]
 async fn main() {
     let app = Router::new()
-        .route("/", get(|| async { "Ahoj z Axumu!" }));
+        .route("/api/status", get(controller::status::get_status))
+        .merge(controller::provider::initialize_controllers());
 
-    let port = util::constant::PORT;
-
-    let listener = tokio::net::TcpListener::bind("").await.unwrap();
-    println!("Server is listening at {}", port);
+    let address = util::address::create_address();
+    let listener = tokio::net::TcpListener::bind(address.to_string()).await.unwrap();
+    
+    println!("The server is listening at {}", address.to_string());
     
     axum::serve(listener, app).await.unwrap();
 }
