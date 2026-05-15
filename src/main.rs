@@ -1,20 +1,26 @@
-use axum::{
-    Router, routing::get,
-};
+use axum::Router;
+use crate::bin::enums::server::ServerReadyResult;
 
-mod util;
-mod controller;
-mod entity;
-mod dto;
-mod service;
+pub mod bin;
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new()
-        .route("/api/status", get(controller::status::get_status))
-        .merge(controller::provider::initialize_controllers());
+    let server_status: ServerReadyResult = bin::corrector::server::is_ready();
+    match server_status {
+        ServerReadyResult::Failed(err) => {
+            println!("Sorry, but there is an error with '{}'", err);
+            return;
+        }
 
-    let address = util::address::create_address();
+        ServerReadyResult::Success => {
+            println!("Everything is good, we are ready to start server!");
+        }
+    }
+
+    let app = Router::new()
+        .merge(bin::controller::provider::initialize_controllers());
+
+    let address = bin::util::address::create_address();
     let listener = tokio::net::TcpListener::bind(address.to_string()).await.unwrap();
     
     println!("The server is listening at {}", address.to_string());
