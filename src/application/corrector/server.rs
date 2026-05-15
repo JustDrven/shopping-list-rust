@@ -1,5 +1,7 @@
 use std::fs::exists;
+use crate::application::enums::logger::LoggerType;
 use crate::application::enums::server::ServerReadyResult;
+use crate::application::util::logger;
 
 fn check_environment_file() -> bool {
     let file_status = exists("./.env");
@@ -9,7 +11,7 @@ fn check_environment_file() -> bool {
         }
 
         Err(err) => {
-            println!("Specific Error: {}", err);
+            logger::log(LoggerType::Error, format!("Specific Error: {}", err));
             false
         }
     }
