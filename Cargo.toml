@@ -1,5 +1,5 @@
 [package]
-name = "shopping"
+name = "shopping-list"
 version = "0.1.0"
 edition = "2024"
 
@@ -8,3 +8,6 @@ edition = "2024"
 axum = "0.8.9"
 tokio = { version = "1.52.3", features = ["full"] }
 serde = { version = "1.0.228", features = ["derive"] }
+envfile = "0.2.1"
+orma = "0.3.3"
+pinger = "2.1.1"

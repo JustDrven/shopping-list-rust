@@ -1,11 +1,14 @@
 use axum::Json;
-use crate::application::dto;
+use crate::application::dto::item::ItemDto;
 
-pub async fn item() -> Json<dto::item::ItemDto> {
-    Json(dto::item::ItemDto {
-        name: "".to_string(),
-        id: 0,
-    })
+pub async fn item() -> Json<ItemDto> {
+
+    let body: ItemDto = ItemDto {
+        name: "jidlo".to_string(),
+        id: 94373
+    };
+
+    Json(body)
 }
 
 pub async fn items() -> String {
