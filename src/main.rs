@@ -1,29 +1,39 @@
 use axum::Router;
-use crate::bin::enums::server::ServerReadyResult;
+use tokio::net::TcpListener;
 
-pub mod bin;
+use application::enums::server::ServerReadyResult;
+use application::util::logger;
+
+use crate::application::enums::logger::LoggerType;
+
+pub mod application;
+
+async fn create_server() -> TcpListener {
+    let address: String = application::util::address::create_address();
+    let listener: TcpListener = TcpListener::bind(address.to_string()).await.unwrap();
+
+    logger::log(LoggerType::Info, format!("The server is listening at {}", address));
+
+    listener
+}
 
 #[tokio::main]
 async fn main() {
-    let server_status: ServerReadyResult = bin::corrector::server::is_ready();
+    let server_status: ServerReadyResult = application::corrector::server::is_ready();
     match server_status {
         ServerReadyResult::Failed(err) => {
-            println!("Sorry, but there is an error with '{}'", err);
+            let error_message: String = format!("Sorry, but there is an error with '{}'", err);
+            logger::log(LoggerType::Error, error_message);
             return;
         }
 
         ServerReadyResult::Success => {
-            println!("Everything is good, we are ready to start server!");
+            logger::log(LoggerType::Info, "Everything is good, we are ready to start server!".to_string());
         }
     }
 
-    let app = Router::new()
-        .merge(bin::controller::provider::initialize_controllers());
-
-    let address = bin::util::address::create_address();
-    let listener = tokio::net::TcpListener::bind(address.to_string()).await.unwrap();
-    
-    println!("The server is listening at {}", address.to_string());
+    let app: Router = application::controller::provider::create_router();
+    let listener: TcpListener = create_server().await;
     
     axum::serve(listener, app).await.unwrap();
 }

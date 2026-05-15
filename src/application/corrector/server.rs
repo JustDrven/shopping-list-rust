@@ -1,5 +1,5 @@
 use std::fs::exists;
-use crate::bin::enums::server::ServerReadyResult;
+use crate::application::enums::server::ServerReadyResult;
 
 fn check_environment_file() -> bool {
     let file_status = exists("./.env");
@@ -7,7 +7,9 @@ fn check_environment_file() -> bool {
         Ok(_) => {
             true
         }
-        Err(_) => {
+
+        Err(err) => {
+            println!("Specific Error: {}", err);
             false
         }
     }
