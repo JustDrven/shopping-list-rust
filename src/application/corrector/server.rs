@@ -1,9 +1,11 @@
 use std::fs::exists;
 use std::time::Duration;
-use crate::application;
+
 use pinger::{PingOptions, Pinger};
 use pinger::linux::LinuxPinger;
 use pinger::macos::MacOSPinger;
+
+use crate::application;
 use crate::application::enums::logger::LoggerType;
 use crate::application::enums::server::ServerReadyResult;
 use crate::application::util::logger;
