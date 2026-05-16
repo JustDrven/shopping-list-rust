@@ -1,4 +1,5 @@
 use axum::Json;
+
 use crate::application::dto::item::ItemDto;
 
 pub async fn item() -> Json<ItemDto> {
@@ -11,7 +12,10 @@ pub async fn item() -> Json<ItemDto> {
     Json(body)
 }
 
-pub async fn items() -> String {
-    "Hello".to_string()
+pub async fn items() -> Json<Vec<ItemDto>> {
+    Json(vec![ItemDto{
+        name: "wwe".to_string(),
+        id: 9834
+    }])
 }
 
