@@ -23,13 +23,17 @@ async fn load_databases() -> bool {
     ).await;
 
     match result {
-        Ok(_) => true,
+        Ok(_) => {
+            logger::log(LoggerType::Info, "Successfully initialized database".to_string());
+            true
+        },
         Err(error) => {
             let error_message: String = format!("An error occurred while loading the database: {}", error);
             logger::log(LoggerType::Info, error_message);
             false
         }
     }
+
 }
 
 #[tokio::main]
