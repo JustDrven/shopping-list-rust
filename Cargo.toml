@@ -11,3 +11,4 @@ serde = { version = "1.0.228", features = ["derive"] }
 envfile = "0.2.1"
 orma = "0.3.3"
 pinger = "2.1.1"
+tokio-postgres = "0.7.17"
