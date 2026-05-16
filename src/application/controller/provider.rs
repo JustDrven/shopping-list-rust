@@ -9,7 +9,6 @@ use crate::application::enums::logger::LoggerType;
 use crate::application::util::logger;
 
 pub fn create_router() -> Router {
-
     logger::log(LoggerType::Info, "Starting to create router!".to_string());
 
     Router::new()
