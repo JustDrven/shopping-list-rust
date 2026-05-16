@@ -12,3 +12,5 @@ envfile = "0.2.1"
 orma = "0.3.3"
 pinger = "2.1.1"
 tokio-postgres = "0.7.17"
+moka = { version = "0.12.15", features = ["future"] }
+threadpool = "1.8.1"
