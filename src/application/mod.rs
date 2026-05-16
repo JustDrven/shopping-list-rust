@@ -6,3 +6,4 @@ pub mod dto;
 pub mod orm;
 pub mod environment;
 pub mod repository;
+pub mod payload;
