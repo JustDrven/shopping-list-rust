@@ -18,14 +18,17 @@ async fn create_server() -> TcpListener {
 
 async fn load_databases() -> bool {
     let mut variables = application::environment::loader::load().await;
-    let result = application::orm::database::initialize(&mut variables);
-    
+    let result = application::orm::database::initialize(
+        &mut variables
+    ).await;
+
     match result {
         Ok(_) => true,
-        Err(message) => {
-            logger::log(LoggerType::Error, message);
+        Err(error) => {
+            let error_message: String = format!("An error occurred while loading the database: {}", error);
+            logger::log(LoggerType::Info, error_message);
             false
-        },
+        }
     }
 }
 
