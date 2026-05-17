@@ -1,16 +1,14 @@
 [package]
 name = "shopping-list"
-version = "0.1.0"
+version = "26.0.1"
 edition = "2024"
-
 
 [dependencies]
 axum = "0.8.9"
 tokio = { version = "1.52.3", features = ["full"] }
 serde = { version = "1.0.228", features = ["derive"] }
 envfile = "0.2.1"
-orma = "0.3.3"
 pinger = "2.1.1"
-tokio-postgres = "0.7.17"
 moka = { version = "0.12.15", features = ["future"] }
 threadpool = "1.8.1"
+sea-orm = { version =  "1.1.20", features = ["sqlx-postgres", "runtime-tokio-native-tls", "macros"] }
