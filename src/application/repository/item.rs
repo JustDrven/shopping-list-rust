@@ -1,4 +1,5 @@
 pub mod query {
+
     use std::sync::LazyLock;
     use axum::extract::Path;
     use moka::future::Cache;
@@ -15,8 +16,7 @@ pub mod query {
     });
 
 
-
-    pub(crate) async fn get_item(id: Path<i32>) -> ItemDto {
+    pub async fn get_item(id: Path<i32>) -> ItemDto {
         let mut final_id: i32 = id.0;
         match CACHE.get(&final_id).await {
             Some(item) => item,
@@ -29,7 +29,8 @@ pub mod query {
 
     }
 
-    pub(crate) async fn get_items() -> Vec<ItemDto> {
+
+    pub async fn get_items() -> Vec<ItemDto> {
         const DEFAULT_ID: u8 = 0;
 
         match LIST_CACHE.get(&DEFAULT_ID).await {
@@ -46,41 +47,44 @@ pub mod query {
 }
 
 pub mod mutation {
+
     use axum::Json;
+
     use crate::application::payload::request;
     use crate::application::payload::response;
-
     use crate::application::repository::item::function;
 
-    pub(crate) async fn complete(Json(data): Json<request::CompleteRequest>) -> response::OkResponse {
-        function::complete_async(&data.into()).await;
 
+    pub async fn complete(Json(data): Json<request::CompleteRequest>) -> response::OkResponse {
+        function::complete_async(&data.into()).await;
         response::ok_response(true, String::from("complete"))
     }
 
-    pub(crate) async fn delete(Json(data): Json<request::DeleteRequest>) -> response::OkResponse {
+
+    pub async fn delete(Json(data): Json<request::DeleteRequest>) -> response::OkResponse {
         function::delete_async(&data.into()).await;
         response::ok_response(true, String::from("delete"))
     }
 
-    pub(crate) async fn create(Json(data): Json<request::CreateRequest>) -> response::OkResponse {
+
+    pub async fn create(Json(data): Json<request::CreateRequest>) -> response::OkResponse {
         function::create_async(&data.into()).await;
         response::ok_response(true, String::from("create"))
     }
 
+
 }
 
 mod function {
+
     use sea_orm::{
         ActiveModelTrait, EntityTrait, Set
     };
 
     use crate::application::orm::database;
     use crate::application::dto::item::ItemDto;
-
     use crate::application::models::item;
     use crate::application::models::item::Entity as ItemEntity;
-
     use crate::application::payload::request;
 
     pub async fn create_async(data: &request::CreateRequest) {
@@ -104,6 +108,8 @@ mod function {
 
     }
 
+
+
     pub async fn delete_async(data: &request::DeleteRequest) {
         let id: i32 = data.id;
 
@@ -120,6 +126,7 @@ mod function {
             None => {}
         }
     }
+
 
 
     pub async fn complete_async(data: &request::CompleteRequest) {
@@ -140,6 +147,8 @@ mod function {
         }
 
     }
+
+
 
     pub async fn load_item_from_database(id: &mut i32) -> ItemDto {
         let pool = database::get_pool();
@@ -166,22 +175,23 @@ mod function {
         }
     }
 
+
+
     pub async fn load_items_from_database() -> Vec<ItemDto> {
         let pool = database::get_pool();
 
         match pool {
             Some(pool) => {
-
-                let list = ItemEntity::find()
+                let models = ItemEntity::find()
                     .all(&pool)
                     .await.unwrap();
 
                 let mut to_return: Vec<ItemDto> = Vec::new();
-                for x in list {
+                for model in models {
                     let dto = ItemDto {
-                        id: x.id,
-                        name: x.name,
-                        complete: x.complete
+                        id: model.id,
+                        name: model.name,
+                        complete: model.complete
                     };
 
                     to_return.push(dto);
@@ -194,6 +204,9 @@ mod function {
 
 
     }
+
+
+
 
 }
 

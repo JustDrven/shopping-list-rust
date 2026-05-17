@@ -1,5 +1,7 @@
 use std::collections::HashMap;
-use std::sync::{OnceLock};
+use std::sync::{
+    OnceLock
+};
 use sea_orm::{
     Database, DatabaseConnection
 };
@@ -54,18 +56,16 @@ pub async fn initialize(variables: &mut HashMap<String, String>) -> Result<bool,
     let password: &String = variables.get(password_key).unwrap();
     let db_name: &String = variables.get(db_key).unwrap();
 
-    {
-        logger::log(LoggerType::Info, format!("Opening database connection for {} - password: {}", host, !password.is_empty()));
-        let new_pool = create_connection(host, port, db_name, username, password).await?;
 
-        if DB_CLIENT.set(new_pool.into()).is_err() {
-            return Err("Database already initialized".to_string());
-        }
+    logger::log(LoggerType::Info, format!("Opening database connection for {} - password: {}", host, !password.is_empty()));
+    let new_pool = create_connection(host, port, db_name, username, password).await?;
+
+    if DB_CLIENT.set(new_pool.into()).is_err() {
+        return Err("Database already initialized".to_string());
     }
 
     Ok(true)
 }
-
 
 async fn create_connection(
     host: &str, port: &str,
@@ -77,5 +77,4 @@ async fn create_connection(
     Ok(Database::connect(stream).await.unwrap())
 
 }
-
 

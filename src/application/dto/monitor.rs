@@ -4,3 +4,4 @@ use serde::Serialize;
 pub struct Monitor {
     pub ok: bool,
 }
+

@@ -7,5 +7,8 @@ pub struct OkResponse {
 }
 
 pub fn ok_response(ok: bool, message: String) -> OkResponse {
-    OkResponse{ok, message}
+    OkResponse{ ok, message }
 }
+
+
+

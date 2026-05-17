@@ -3,3 +3,4 @@ pub enum LoggerType {
     Error,
     Warning
 }
+

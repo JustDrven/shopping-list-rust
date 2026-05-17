@@ -1,7 +1,9 @@
 use std::fs::exists;
 use std::time::Duration;
 
-use pinger::{PingOptions, Pinger};
+use pinger::{
+    PingOptions, Pinger
+};
 use pinger::linux::LinuxPinger;
 use pinger::macos::MacOSPinger;
 
@@ -9,6 +11,7 @@ use crate::application;
 use crate::application::enums::logger::LoggerType;
 use crate::application::enums::server::ServerReadyResult;
 use crate::application::util::logger;
+use crate::application::util::os;
 
 fn check_environment_file() -> bool {
     let file_status = exists("./.env");
@@ -24,20 +27,23 @@ fn check_environment_file() -> bool {
     }
 }
 
-fn check_port() -> bool {
-    let current_os: String = application::util::os::current();
-    let ping_option: PingOptions = PingOptions::new_ipv4(
-        application::util::address::create_address(),
-        Duration::from_secs(3),
-        Some("eth0".to_string()),
-    );
+fn get_ping_options() -> PingOptions {
+    let address: String = application::util::address::create_address();
+    let timeout: Duration = Duration::from_secs(3);
+    let interface: Option<String> = Some("eth0".to_string());
 
-    if current_os.eq(application::util::os::MACOS) {
+    PingOptions::new_ipv4(address, timeout, interface)
+}
+
+fn check_port() -> bool {
+    let ping_option: PingOptions = get_ping_options();
+
+    if os::is_macos() {
         macos_pinger(ping_option)
-    } else if current_os.eq(application::util::os::LINUX) {
+    } else if os::is_linux() {
         linux_pinger(ping_option)
     } else {
-        logger::log(LoggerType::Error, format!("Invalid OS: {}", current_os));
+        logger::log(LoggerType::Error, format!("Invalid OS: {}", os::current()));
         false
     }
 
@@ -48,12 +54,13 @@ fn linux_pinger(option: PingOptions) -> bool {
     let response = pinger.start().unwrap().recv();
 
     match response {
-        Ok(_) => {true},
+        Ok(_) => { true },
         Err(err) => {
             logger::log(LoggerType::Error, format!("Linux Error: {}", err));
             false
         }
     }
+
 }
 
 fn macos_pinger(option: PingOptions) -> bool {

@@ -18,9 +18,7 @@ async fn create_server() -> TcpListener {
 
 async fn load_databases() -> bool {
     let mut variables = application::environment::loader::load().await;
-    let result = application::orm::database::initialize(
-        &mut variables
-    ).await;
+    let result = application::orm::database::initialize(&mut variables).await;
 
     match result {
         Ok(_) => {
@@ -49,6 +47,7 @@ async fn main() {
         ServerReadyResult::Success => {
             logger::log(LoggerType::Info, "Everything is good, we are ready to start server!".to_string());
         }
+
     }
 
     if !load_databases().await {
@@ -61,3 +60,5 @@ async fn main() {
     
     axum::serve(listener, app).await.unwrap();
 }
+
+

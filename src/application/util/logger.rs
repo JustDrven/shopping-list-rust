@@ -2,9 +2,10 @@ use crate::application::enums::logger::LoggerType;
 
 pub fn log(log_type: LoggerType, message: String) {
     let prefix = get_prefix(log_type);
-
+    
     println!("[{}] {}", prefix, message);
 }
+
 
 fn get_prefix(logger_type: LoggerType) -> String {
     match logger_type {
@@ -13,3 +14,5 @@ fn get_prefix(logger_type: LoggerType) -> String {
         LoggerType::Warning => String::from("WARNING"),
     }
 }
+
+
