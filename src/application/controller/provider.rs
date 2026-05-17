@@ -17,7 +17,7 @@ pub fn create_router() -> Router {
         .route("/items/{id}", get(query::item::item))
         .route("/items", get(query::item::items))
 
-        .route("/items/{id}/complete", put(mutation::item::complete))
+        .route("/items/complete", put(mutation::item::complete))
         .route("/items", post(mutation::item::create))
         .route("/items", delete(mutation::item::delete))
 }
