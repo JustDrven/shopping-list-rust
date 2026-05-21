@@ -1,9 +1,7 @@
 use std::fs::exists;
 use std::time::Duration;
 
-use pinger::{
-    PingOptions, Pinger
-};
+use pinger::{PingOptions, PingResult, Pinger};
 use pinger::linux::LinuxPinger;
 use pinger::macos::MacOSPinger;
 

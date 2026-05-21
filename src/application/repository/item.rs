@@ -86,6 +86,7 @@ mod function {
     use crate::application::models::item;
     use crate::application::models::item::Entity as ItemEntity;
     use crate::application::payload::request;
+    use crate::application::util::mapper::map_item_to_dto;
 
     pub async fn create_async(data: &request::CreateRequest) {
         let name: &String = &data.name;
@@ -148,8 +149,6 @@ mod function {
 
     }
 
-
-
     pub async fn load_item_from_database(id: &mut i32) -> ItemDto {
         let pool = database::get_pool();
 
@@ -160,11 +159,7 @@ mod function {
                     .one(&pool)
                     .await.unwrap().unwrap();
 
-                ItemDto {
-                    id: item_model.id,
-                    name: item_model.name,
-                    complete: item_model.complete,
-                }
+                map_item_to_dto(item_model)
 
             }
             _ =>  ItemDto {
@@ -188,11 +183,7 @@ mod function {
 
                 let mut to_return: Vec<ItemDto> = Vec::new();
                 for model in models {
-                    let dto = ItemDto {
-                        id: model.id,
-                        name: model.name,
-                        complete: model.complete
-                    };
+                    let dto = map_item_to_dto(model);
 
                     to_return.push(dto);
                 }

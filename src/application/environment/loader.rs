@@ -11,9 +11,13 @@ async fn get_environments(path: &Path) -> EnvFile {
 
 pub async fn load() -> HashMap<String, String> {
     let path: &Path = Path::new(application::util::constants::ENV_FILE_NAME);
-    let environment: EnvFile = get_environments(path).await;
     let mut to_return: HashMap<String, String> = HashMap::new();
 
+    if path.exists() {
+        return to_return;
+    }
+
+    let environment: EnvFile = get_environments(path).await;
     for (x, y) in &environment.store {
         let key: String = x.to_string();
         let value: String = y.to_string();
@@ -22,6 +26,7 @@ pub async fn load() -> HashMap<String, String> {
     }
 
     to_return
+
 }
 
 
